@@ -1,0 +1,42 @@
+    private fun ensureForegroundLocationPermission(): Boolean {
+        val permission = Manifest.permission.ACCESS_FINE_LOCATION
+        val granted = ContextCompat.checkSelfPermission(
+            requireContext(),
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
+
+        // Permission has been granted
+        if (granted) return true
+
+        if (shouldShowRequestPermissionRationale(permission)) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Your title")
+                .setMessage("Your message")
+                .setCancelable(false)
+                .setPositiveButton("Ok") { _, _ ->
+                    // Requesting foreground location permission
+                    foregroundLocationPermissionLauncher.launch(
+                        arrayOf(
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        )
+                    )
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    // Foreground location permission rationale cancelled
+                }
+                .show()
+
+            return false
+        }
+
+        // Requesting foreground location permission
+        foregroundLocationPermissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        )
+
+        return false
+    }
